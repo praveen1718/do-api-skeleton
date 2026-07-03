@@ -1,0 +1,28 @@
+# DigitalOcean App Platform spec.
+# Deploy with:  doctl apps create --spec .do/app.yaml
+# Update with:  doctl apps update <APP_ID> --spec .do/app.yaml
+#
+# App Platform builds the Dockerfile automatically and injects $PORT.
+name: ingestion-api
+region: nyc
+services:
+  - name: api
+    dockerfile_path: Dockerfile
+    source_dir: /
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    http_port: 8080
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 5
+      period_seconds: 10
+    envs:
+      - key: APP_ENVIRONMENT
+        value: production
+      - key: APP_LOG_LEVEL
+        value: INFO
+    # For a public repo you can add:
+    # github:
+    #   repo: your-user/your-repo
+    #   branch: main
+    #   deploy_on_push: true
